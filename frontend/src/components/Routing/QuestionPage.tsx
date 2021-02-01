@@ -6,7 +6,7 @@ import { Page } from '../child-components/Page'
 import {QuestionData, getQuestion} from '../MockData/QuestionsData'
 import { gray3, gray6} from '../Styles/Styles'
 import {AnswerList} from '../AnswerList'
-import { Form } from '../Form'
+import { Form, required, minLength } from '../Form'
 import { Field } from '../Field'
 interface RouteParams {
   questionId: string;
@@ -57,7 +57,13 @@ export const QuestionPage: React.FC<RouteComponentProps<RouteParams>> = ({ match
             <div css={css` 
             margin-top: 20px;
             ` }>
-              <Form submitCaption="Submit Your Answer">
+              <Form submitCaption="Submit Your Answer"
+                validationRules={{
+                  content: [
+                    { validator: required },
+                    {validator: minLength, arg: 50},
+                ]
+              }}>
                 <Field name="content" label="Your Answer" type="TextArea"/>
               </Form>
             </div>

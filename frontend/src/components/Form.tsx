@@ -85,6 +85,16 @@ export const Form: FC<Props> = ({
     const rules = Array.isArray(validationRules[fieldName])
       ? (validationRules[fieldName] as Validation[])
       : ([validationRules[fieldName]] as Validation[]);
+    const fieldErrors: string[] = [];
+    rules.forEach(rule => {
+      const error = rule.validator(values[fieldName], rule.arg);
+      if (error) {
+        fieldErrors.push(error);
+      }
+    });
+    const newErrors = { ...errors, [fieldName]: fieldErrors };
+    setErrors(newErrors);
+    return fieldErrors;
   }
   //form that displays child data and has submit button
   return (

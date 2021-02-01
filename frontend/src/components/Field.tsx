@@ -61,7 +61,7 @@ export const Field: FC<Props> = ({
   }
   return (
     <FormContext.Consumer>
-      {({values}) => (
+      {({values, errors}) => (
         <div css={css` 
       display: flex;
       flex-direction: column;
@@ -95,6 +95,14 @@ export const Field: FC<Props> = ({
           height:100px
           `} />
           )}
+          {errors[name] && errors[name].length > 0 &&
+            errors[name].map(error => (
+              <div key={error} css={css` 
+              font-size: 12px;
+              color: red;`}>
+                {error}
+              </div>
+          ))}
         </div>
       )}
     </FormContext.Consumer>
