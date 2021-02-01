@@ -34,14 +34,31 @@ outline-color: ${gray5};
 background-color: ${gray6};
 }`;
 
-export const Field: FC<Props> = ({ name, label, type = 'Text' }) => {
-  const { setValue } = useContext(FormContext);
+export const Field: FC<Props> = ({
+  name,
+  label,
+  type = 'Text'
+ }) => {
+  const { setValue, touched, setTouched, validate } = useContext(FormContext);
   const handleChange = (
     e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>) => {
     if (setValue) {
       setValue(name, e.currentTarget.value);
     }
+    if (touched[name]) {
+      if (validate) {
+        validate(name);
+      }
     }
+  }
+  const handleBlur = () => {
+    if (setTouched) {
+      setTouched(name);
+    }
+    if (validate) {
+      validate(name);
+    }
+  }
   return (
     <FormContext.Consumer>
       {({values}) => (
@@ -63,6 +80,7 @@ export const Field: FC<Props> = ({ name, label, type = 'Text' }) => {
                 values[name] === undefined ? '': values[name]
               }
               onChange={handleChange}
+              onBlur={handleBlur}
               css={baseCSS} />
           )}
           {type === 'TextArea' && (
@@ -71,6 +89,7 @@ export const Field: FC<Props> = ({ name, label, type = 'Text' }) => {
                 values[name] === undefined ? '': values[name]
               }
               onChange={handleChange}
+              onBlur={handleBlur}
               css={css`
           ${baseCSS}
           height:100px
