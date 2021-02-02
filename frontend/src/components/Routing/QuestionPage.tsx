@@ -3,10 +3,10 @@ import {css, jsx} from '@emotion/react'
 import React, { Fragment, useEffect, useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 import { Page } from '../child-components/Page'
-import {QuestionData, getQuestion} from '../MockData/QuestionsData'
+import {QuestionData, getQuestion, postAnswer} from '../MockData/QuestionsData'
 import { gray3, gray6} from '../Styles/Styles'
 import {AnswerList} from '../AnswerList'
-import { Form, required, minLength } from '../Form'
+import { Form, required, minLength, Values } from '../Form'
 import { Field } from '../Field'
 interface RouteParams {
   questionId: string;
@@ -25,6 +25,15 @@ export const QuestionPage: React.FC<RouteComponentProps<RouteParams>> = ({ match
       doGetQuestion(questionId);
     }
   }, [match.params.questionId]);
+  const handleSubmit = async (values: Values) => {
+    const result = await postAnswer({
+      questionId: question!.questionId,
+      content: values.content,
+      userName: 'Fred',
+      created: new Date()
+    });
+    return { success: result ? true : false };
+  }
   return (
     <Page>
       <div css={css` 
@@ -63,7 +72,10 @@ export const QuestionPage: React.FC<RouteComponentProps<RouteParams>> = ({ match
                     { validator: required },
                     {validator: minLength, arg: 50},
                 ]
-              }}>
+                }}
+                onSubmit={handleSubmit}
+                failureMessage="There was a problem with your answer..."
+                successMessage="Your answer was successfully submitted">
                 <Field name="content" label="Your Answer" type="TextArea"/>
               </Form>
             </div>
