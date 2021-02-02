@@ -28,13 +28,17 @@
     "cli": "^1.0.1",
     "create-index-html": "^1.5.1",
     "react-bootstrap": "^1.4.0",
+    "react-redux": "^7.2.2",
     "react-router-dom": "^5.2.0",
     "reactstrap": "^8.5.1",
+    "redux": "^4.0.5",
+    "redux-thunk": "^2.3.0",
     "webpack": "^4.44.1",
     "webpack-cli": "^3.3.12"
   },
   "devDependencies": {
     "@babel/plugin-transform-runtime": "^7.12.10",
+    "@types/react-redux": "^7.1.16",
     "@types/react-router-dom": "^5.1.6",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
