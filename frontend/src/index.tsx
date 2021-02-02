@@ -2,7 +2,7 @@
 import React, { Suspense } from 'react';
 import ReactDom from 'react-dom';
 import { jsx, css } from '@emotion/react';
-import { Header } from './components/header';
+import { HeaderWithRouter as Header } from './components/header';
 import HomePage from './components/HomePage';
 import { fontFamily, fontSize, gray2 } from './components/Styles/Styles';
 import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom';

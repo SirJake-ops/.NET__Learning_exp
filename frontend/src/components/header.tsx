@@ -1,13 +1,26 @@
 /**@jsx jsx */
 import { jsx, css } from '@emotion/react'
 import { fontFamily, fontSize, gray1, gray2, gray5 } from './Styles/Styles';
-import React, { ChangeEvent } from 'react'
-import {Link} from 'react-router-dom'
+import React, {FC, ChangeEvent, useState, FormEvent } from 'react'
+import {Link, RouteComponentProps, withRouter} from 'react-router-dom'
 
 
-export const Header = () => {
+
+
+export const Header: FC<RouteComponentProps> = ({
+  history, 
+  location,
+}) => {
+  const searchParams = new URLSearchParams(location.search);
+  const criteria = searchParams.get('criteria') || '';
+  const [search, setSearch] = useState(criteria);
+
   const handleSearchInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    console.log(e.currentTarget.value);
+    setSearch(e.currentTarget.value);
+  }
+  const handleSearchSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    history.push(`/search?criteria=${search}`);
   }
   return (
     <div css={css`
@@ -28,21 +41,25 @@ export const Header = () => {
   font-weight: bold;
   color: ${gray1};
   text-decoration: none`}>Q & A</Link>
-      <input type="text" placeholder="Search..."
-        css={css`
-  box-sizing:border-box;
-  font-family: ${fontFamily};
-  font-size: ${fontSize};
-  padding: 8px 12px;
-  border: 1px solid ${gray5};
-  border-radius: 3px;
-  color: ${gray2};
-  background-color: white;
-  width: 200px;
-  height: 30px;
-  :focus{
-    outline-color: ${gray5};
-  }`} onChange={handleSearchInputChange}></input>
+      <form onSubmit={handleSearchSubmit}>
+          <input type="text" placeholder="Search..."
+            value={search}
+            onChange={handleSearchInputChange}
+            css={css`
+      box-sizing:border-box;
+      font-family: ${fontFamily};
+      font-size: ${fontSize};
+      padding: 8px 12px;
+      border: 1px solid ${gray5};
+      border-radius: 3px;
+      color: ${gray2};
+      background-color: white;
+      width: 200px;
+      height: 30px;
+      :focus{
+        outline-color: ${gray5};
+      }`}></input>
+        </form>
       <Link to="./signin" css={css` 
   font-family: ${fontFamily};
   font-size: ${fontSize};
@@ -60,3 +77,5 @@ export const Header = () => {
         <span>Sign In</span></Link>
     </div>)
 }
+
+export const HeaderWithRouter = withRouter(Header);
