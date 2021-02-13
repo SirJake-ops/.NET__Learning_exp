@@ -11,7 +11,7 @@ export interface Values{
 export interface Props {
   submitCaption?: string;
   validationRules?: ValidationProp;
-  onSubmit: (values: Values) => Promise<SubmitResult>;
+  onSubmit: (values: Values) => Promise<SubmitResult> | void;
   successMessage?: string;
   failureMessage?: string;
 }
