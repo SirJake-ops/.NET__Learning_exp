@@ -1,4 +1,9 @@
-import { getUnansweredQuestions, QuestionData, postQuestion, PostQuestionData } from '../components/MockData/QuestionsData';
+import {
+  getUnansweredQuestions,
+  QuestionData,
+  postQuestion,
+  PostQuestionData,
+} from "../components/MockData/QuestionsData";
 import {
   Action,
   ActionCreator,
@@ -7,9 +12,9 @@ import {
   combineReducers,
   Store,
   createStore,
-  applyMiddleware
-} from 'redux';
-import thunk, { ThunkAction } from 'redux-thunk';
+  applyMiddleware,
+} from "redux";
+import thunk, { ThunkAction } from "redux-thunk";
 
 //Start of Interfaces
 interface QuestionsState {
@@ -22,119 +27,122 @@ export interface AppState {
   readonly questions: QuestionsState;
 }
 //Start of Action Interfaces
-export interface GettingUnansweredQuestionsAction extends Action<'GettingUnansweredQuestions'> {}
+export interface GettingUnansweredQuestionsAction
+  extends Action<"GettingUnansweredQuestions"> {}
 
-export interface GotUnansweredQuestionsAction extends Action<'GotUnansweredQuestions'>{
+export interface GotUnansweredQuestionsAction
+  extends Action<"GotUnansweredQuestions"> {
   questions: QuestionData[];
 }
 
-export interface PostedQuestionAction extends Action<'PostedQuestion'> {
+export interface PostedQuestionAction extends Action<"PostedQuestion"> {
   result: QuestionData | undefined;
 }
 //End of Action Interfaces
 
 //End of Interfaces
 
-
 //Define Types
-type QuestionsActions = | GettingUnansweredQuestionsAction | GotUnansweredQuestionsAction | PostedQuestionAction;
+type QuestionsActions =
+  | GettingUnansweredQuestionsAction
+  | GotUnansweredQuestionsAction
+  | PostedQuestionAction;
 
 //End of Types
 
 const initialQuestionState: QuestionsState = {
   loading: false,
   unanswered: null,
-}
+};
 //Beginning of the action creators
-export const getUnansweredQuestionsActionCreator: ActionCreator<ThunkAction<Promise<void>,
-  QuestionData[],
-  null,
-  GotUnansweredQuestionsAction>> = () => {
+export const getUnansweredQuestionsActionCreator: ActionCreator<
+  ThunkAction<Promise<void>, QuestionData[], null, GotUnansweredQuestionsAction>
+> = () => {
   return async (dispatch: Dispatch) => {
     const gettingUnansweredQuestionsAction: GettingUnansweredQuestionsAction = {
-      type: 'GettingUnansweredQuestions'
+      type: "GettingUnansweredQuestions",
     };
     dispatch(gettingUnansweredQuestionsAction);
     const questions = await getUnansweredQuestions();
     const gotUnansweredQuestionAction: GotUnansweredQuestionsAction = {
       questions,
-      type: 'GotUnansweredQuestions'
+      type: "GotUnansweredQuestions",
     };
     dispatch(gotUnansweredQuestionAction);
   };
 };
 
-
-export const postQuestionActionCreator: ActionCreator<ThunkAction<Promise<void>,
-  QuestionData,
-  PostQuestionData,
-  PostedQuestionAction>> = (question: PostQuestionData) => {
-    return async (dispatch: Dispatch) => {
-      const result = await postQuestion(question);
-      const postedQuestionAction: PostedQuestionAction = {
-        type: 'PostedQuestion',
-        result
-      };
-      dispatch(postedQuestionAction);
-    }
-}
-
-export const clearPostedQuestionActionCreator: ActionCreator<PostedQuestionAction> = () => {
-  const postedQuestionAction: PostedQuestionAction = {
-    type: 'PostedQuestion',
-    result: undefined,
+export const postQuestionActionCreator: ActionCreator<
+  ThunkAction<
+    Promise<void>,
+    QuestionData,
+    PostQuestionData,
+    PostedQuestionAction
+  >
+> = (question: PostQuestionData) => {
+  return async (dispatch: Dispatch) => {
+    const result = await postQuestion(question);
+    const postedQuestionAction: PostedQuestionAction = {
+      type: "PostedQuestion",
+      result,
+    };
+    dispatch(postedQuestionAction);
   };
-  return postedQuestionAction;
-}
+};
+
+export const clearPostedQuestionActionCreator: ActionCreator<PostedQuestionAction> =
+  () => {
+    const postedQuestionAction: PostedQuestionAction = {
+      type: "PostedQuestion",
+      result: undefined,
+    };
+    return postedQuestionAction;
+  };
+
 //End of creators
 
 //Start of reducer
-const neverReached = (never: never) => { };
+const neverReached = (never: never) => {};
 
 const questionsReducer: Reducer<QuestionsState, QuestionsActions> = (
-  state = initialQuestionState, action) => {
+  state = initialQuestionState,
+  action
+) => {
   switch (action.type) {
-    case 'GettingUnansweredQuestions': {
+    case "GettingUnansweredQuestions": {
       return {
         ...state,
         unanswered: null,
         loading: true,
-      }
-    };
-    case 'GotUnansweredQuestions': {
+      };
+    }
+    case "GotUnansweredQuestions": {
       return {
         ...state,
         unanswered: action.questions,
         loading: false,
       };
     }
-    case 'PostedQuestion': {
+    case "PostedQuestion": {
       return {
         ...state,
-        unanswered: action.result ? (state.unanswered || []).concat(action.result) :
-          state.unanswered,
+        unanswered: action.result
+          ? (state.unanswered || []).concat(action.result)
+          : state.unanswered,
         postedResult: action.result,
-      }
-    };
+      };
+    }
     default:
       neverReached(action);
   }
   return state;
-}
-
-
+};
 
 export function configureStore(): Store<AppState> {
-  const store = createStore(
-    rootReducer,
-    undefined,
-    applyMiddleware(thunk)
-  );
+  const store = createStore(rootReducer, undefined, applyMiddleware(thunk));
   return store;
 }
 
-
 const rootReducer = combineReducers<AppState>({
-  questions: questionsReducer
+  questions: questionsReducer,
 });
-
