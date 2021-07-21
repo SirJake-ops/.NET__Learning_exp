@@ -1,15 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using Backend.Data.Models;
-using Microsoft.Extensions.Configuration;
 using Dapper;
+using Microsoft.Extensions.Configuration;
 
 namespace Backend.Data
 {
     public class DataRepository : IDataRepository
     {
-
         private readonly string _connectionString;
+
         public DataRepository(IConfiguration configuration)
         {
             _connectionString = configuration["ConnectionString:DefaultConnection"];
@@ -27,7 +28,7 @@ namespace Backend.Data
             using var connection = new SqlConnection(_connectionString);
             connection.Open();
             return connection.Query<QuestionGetManyResponse>(@"EXEC dbo.Question_GetMany_BySearch @Search = @Search",
-                new {search = search});
+                new {search});
         }
 
         public IEnumerable<QuestionGetManyResponse> GetUnansweredQuestions()
@@ -45,10 +46,8 @@ namespace Backend.Data
                 @"EXEC dbo.Question_GetSingle @QuestionId = @QuestionId",
                 new {QuestionId = questionId});
             if (question != null)
-            {
                 question.Answers = connection.Query<AnswerGetResponse>(@"EXEC dbo.Answer_Get_ByQuestionId 
             @QuestionId = @QuestionId", new {QuestionId = questionId});
-            }
 
             return question;
         }
@@ -59,7 +58,7 @@ namespace Backend.Data
             connection.Open();
             return connection.QueryFirst<bool>(
                 @"EXEC dbo.Question_Exists @QuestionId = @QuestionId",
-                new { QuestionId = questionId }
+                new {QuestionId = questionId}
             );
         }
 
@@ -69,7 +68,50 @@ namespace Backend.Data
             connection.Open();
             return connection.QueryFirstOrDefault<AnswerGetResponse>(
                 @"EXEC dbo.Answer_Get_ByAnswerId @AnswerId = @AnswerId",
-                new { AnswerId = answerId }
+                new {AnswerId = answerId}
+            );
+        }
+
+        public QuestionGetSingleResponse PostQuestion(QuestionPostRequest question)
+        {
+            using var connection = new SqlConnection(_connectionString);
+            connection.Open();
+            var questionId = connection.QueryFirst<int>(
+                @"EXEC dbo.Question_Post
+                    @Title = @Title, @Content = @Content,
+                    @UserId = @UserId, @UserName = @UserName,
+                    @Created = @Created", question);
+            return GetQuestion(questionId);
+        }
+
+        public QuestionGetSingleResponse PutQuestion(QuestionPutRequest question, int questionId)
+        {
+            using var connection = new SqlConnection(_connectionString);
+            connection.Open();
+            connection.Execute(
+                @"EXEC dbo.Question_Put 
+                    @QuestionId = @QuestionId, @Title = @Title, @Content = @Content",
+                new {QuestionId = questionId, question.Title, question.Content});
+            return GetQuestion(questionId);
+        }
+
+        public void DeleteQuestion(int questionId)
+        {
+            using var connection = new SqlConnection(_connectionString);
+            connection.Open();
+            connection.Execute(@"EXEC dbo.Question_Delete @QuestionId = @QuestionId", new {QuestionId = questionId});
+        }
+
+        public AnswerGetResponse PostAnswer(AnswerPostRequest answer)
+        {
+            using var connection = new SqlConnection(_connectionString);
+            connection.Open();
+            return connection.QueryFirst<AnswerGetResponse>(
+                @"EXEC dbo.Answer_Post 
+                    @QuestionId = @QuestionId, @Content = @Content, 
+                    @UserId = @UserId, @UserName = @UserName,
+                    @Created = @Created",
+                answer
             );
         }
     }

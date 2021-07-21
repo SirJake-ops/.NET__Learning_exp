@@ -34,3 +34,7 @@ D:\QandA\QandA\Backend\obj\Debug\net5.0\Backend.dll
 D:\QandA\QandA\Backend\obj\Debug\net5.0\ref\Backend.dll
 D:\QandA\QandA\Backend\obj\Debug\net5.0\Backend.pdb
 D:\QandA\QandA\Backend\obj\Debug\net5.0\Backend.genruntimeconfig.cache
+D:\QandA\QandA\Backend\bin\Debug\net5.0\dbup-core.dll
+D:\QandA\QandA\Backend\bin\Debug\net5.0\dbup-sqlserver.dll
+D:\QandA\QandA\Backend\bin\Debug\net5.0\Microsoft.Azure.Services.AppAuthentication.dll
+D:\QandA\QandA\Backend\bin\Debug\net5.0\Microsoft.IdentityModel.Clients.ActiveDirectory.dll
