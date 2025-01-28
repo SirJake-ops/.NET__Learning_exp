@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  web:
+    image: mcr.microsoft.com/dotnet/aspnet:6.0
+    ports:
+      - "5000:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=db;Database=QandA;User=sa;Password=YourStrong!Passw0rd
+    depends_on:
+      - db
+    volumes:
+      - ./Backend:/app
+    working_dir: /app
+    command: ["dotnet", "run"]
+
+  db:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    environment:
+      SA_PASSWORD: "YourStrong!Passw0rd"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    volumes:
+      - SQLServer:/var/opt/mssql
+
+volumes:
+  SQLServer:

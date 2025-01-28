@@ -31,14 +31,32 @@ namespace Backend
             var connectionString = Configuration.GetConnectionString("DefaultConnection");
             EnsureDatabase.For.SqlDatabase(connectionString);
 
-            var upgrader = DeployChanges.To.SqlDatabase(connectionString, null)
-                .WithScriptsEmbeddedInAssembly(System.Reflection.Assembly.GetExecutingAssembly()).WithTransaction()
-                .Build();
-
-            if (upgrader.IsUpgradeRequired())
+            try
             {
-                upgrader.PerformUpgrade();
+                if (connectionString != null)
+                {
+                    var upgrader = DeployChanges.To.SqlDatabase(connectionString, null)
+                        .WithScriptsEmbeddedInAssembly(System.Reflection.Assembly.GetExecutingAssembly()).WithTransaction()
+                        .Build();
+                    if (upgrader.IsUpgradeRequired())
+                    {
+                        upgrader.PerformUpgrade();
+                    }
+                }
+                else
+                {
+                    
+                }
             }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            
+            var defaultConnectionString = connectionString ?? Configuration.GetConnectionString("PostgresConnection");
+
+
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
