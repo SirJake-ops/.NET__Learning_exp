@@ -66,27 +66,27 @@ docker-compose up
 
 
 ## API Routes - Backend
-GET /api/questions - Get all questions
-GET /api/questions/unanswered - Get unanswered questions
-GET /api/questions/{questionId} - Get a specific question by ID
+GET /api/questions - Get all questions  
+GET /api/questions/unanswered - Get unanswered questions  
+GET /api/questions/{questionId} - Get a specific question by ID  
 
 ## API Routes - Fronted
-/ - Home page
-/questions - List of questions
-/questions/{questionId} - Question details page
-/ask - Ask a new question
+/ - Home page  
+/questions - List of questions  
+/questions/{questionId} - Question details page  
+/ask - Ask a new question  
 
 
-## Backend
-ASP.NET Core
-Entity Framework Core
-SQL Server / PostgreSQL
-Swagger
+## Backend  
+ASP.NET Core  
+Entity Framework Core  
+SQL Server / PostgreSQL  
+Swagger  
 
-## Frontend
-React
-Redux
-Axios
+## Frontend  
+React  
+Redux  
+Axios  
 
 
 ## Questions
